@@ -1,6 +1,7 @@
 var
   ship,
-  stars = [];
+  stars = [],
+  projectiles = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -21,9 +22,16 @@ function draw() {
     star.blink();
     star.show();
   });
+  projectiles.forEach(projectile => {
+    for (i = 0; i < 20; i++) {
+      projectile.fly();
+    }
+    projectile.show();
+    projectile.edge(projectiles);
+  });
   ship.update();
   controls();
-
+  console.log(frameCount / (millis() / 1000));
 }
 
 function controls() {
@@ -38,5 +46,14 @@ function controls() {
     ship.boost = true;
   } else {
     ship.boost = false;
+  }
+}
+
+function keyPressed() {
+  if (keyCode == 32) {
+    projectiles.push(new Projectile(ship));
+    if (ship.clone) {
+      projectiles.push(new Projectile(ship.clone));
+    }
   }
 }
