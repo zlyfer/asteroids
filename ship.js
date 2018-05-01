@@ -38,9 +38,9 @@ class Ship {
     push();
     translate(this.position.x, this.position.y);
     rotate(this.head + PI / 2);
-    strokeWeight(0);
     fill(random(((255 / 100) * this.strength) / 5, (255 / 100) * this.strength));
-    quad(-this.size - 2, this.size + 2, 0, this.size / 1.8, this.size + 2, this.size + 2, 0, (this.size / 1.8) + this.strength / (this.size / 3));
+    strokeWeight(0);
+    quad(-this.size, this.size, 0, this.size / 1.8, this.size, this.size, 0, (this.size / 1.8) + this.strength / 2.8);
     pop();
   }
 
@@ -48,9 +48,8 @@ class Ship {
     push();
     translate(this.position.x, this.position.y);
     rotate(this.head + PI / 2);
-    strokeWeight(2);
-    stroke(220);
-    fill(0)
+    strokeWeight(0);
+    fill(180);
     quad(0, -this.size, -this.size, this.size, 0, this.size / 1.8, this.size, this.size);
     pop();
   }
@@ -111,7 +110,9 @@ class Projectile {
       this.position.y < -height / 2
     ) {
       projectiles.splice(index, 1);
+      return random([0, 1]);
     }
+    return 0;
   }
   show() {
     push();
@@ -119,7 +120,7 @@ class Projectile {
     rotate(this.head + PI / 2);
     strokeWeight(0);
     fill(255);
-    rect(-2, 0, 4, 10);
+    rect(-2, -10, 4, 10);
     pop();
   }
 }

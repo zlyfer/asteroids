@@ -4,11 +4,11 @@ class Star {
     this.x = round(random(-width / 2 + this.size, width / 2 - this.size));
     this.y = round(random(-height / 2 + this.size, height / 2 - this.size));
     this.brightness = random(100, 255);
-    this.blinki = round(random(0, 200));
+    this.blinki = round(random(0, 100));
   }
 
   blink() {
-    if (this.blinki <= 200) {
+    if (this.blinki <= 100) {
       this.blinki++;
     } else {
       this.brightness = round(random(100, 255));
