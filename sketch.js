@@ -1,9 +1,9 @@
+// TODO: Ship.shootedge() combined with Ship.getSDir()
+// TODO: Ship.update() > hyperboost > 0.96
 var
   ship,
   stars = [],
   projectiles = [];
-var
-  hyperboost = 100;
 var
   stats = {
     enabled: false,
@@ -11,8 +11,19 @@ var
     missed: 0,
     score: 0,
     speed: 0,
-    accuracy: 0,
-    hyperboost: 100
+    hyperboost: 100,
+    accuracy: 0
+  },
+  debuginfo = {
+    enabled: false,
+    fps: 0,
+    shipDirection: "N",
+    shipClone: false,
+    shipX: 0,
+    shipY: 0,
+    shipCloneDirection: null,
+    shipCloneX: 0,
+    shipCloneY: 0
   };
 var directions;
 
@@ -41,12 +52,15 @@ function windowResized() {
 
 function draw() {
   background(0);
+
   push();
   translate(width / 2, height / 2);
+
   stars.forEach(star => {
     star.blink();
     star.show();
   });
+
   projectiles.forEach(projectile => {
     for (i = 0; i < 20; i++) {
       projectile.fly();
@@ -55,18 +69,21 @@ function draw() {
     stats.missed += projectile.edge(projectiles);
   });
   ship.update();
+
   controls();
-  pop();
-  if (stats.enabled) {
-    showStats();
-  }
+  calcValues();
   showHUD();
+
+  if (debuginfo.enabled) {
+    this.debug();
+    ship.debug();
+  }
+  pop();
 }
 
 function controls() {
   if (keyIsDown(RIGHT_ARROW)) {
     ship.rotation = (TAU / 75);
-    ship.rotation = (TAU / 250);
   } else if (keyIsDown(LEFT_ARROW)) {
     ship.rotation = -(TAU / 75);
   } else {
@@ -106,14 +123,13 @@ function keyPressed() {
         }
       }
       break;
-    case 49:
-      stats.enabled = !stats.enabled;
+    case 68:
+      debuginfo.enabled = !debuginfo.enabled;
       break;
   }
 }
 
-function showStats() {
-  let i = 0;
+function calcValues() {
   stats.score = (-stats.shots * 10);
   stats.speed = ship.strength;
   if (stats.shots > 0) {
@@ -121,24 +137,50 @@ function showStats() {
   } else {
     stats.accuracy = 0;
   }
+  debuginfo.fps = getFrameRate().toFixed(0);
+  debuginfo.shipDirection = ship.sdir;
+  debuginfo.shipX = ship.position.x.toFixed(2);
+  debuginfo.shipY = ship.position.y.toFixed(2);
+  if (ship.clone) {
+    debuginfo.shipClone = true;
+    debuginfo.shipCloneDirection = ship.clone.sdir;
+    debuginfo.shipCloneX = ship.clone.position.x.toFixed(2);
+    debuginfo.shipCloneY = ship.clone.position.y.toFixed(2);
+  } else {
+    debuginfo.shipClone = false;
+    debuginfo.shipCloneDirection = null;
+    debuginfo.shipCloneX = 0;
+    debuginfo.shipCloneY = 0;
+  }
+}
+
+function showHUD() {
   push();
-  translate(15, 30);
+  translate(-width / 2, -height / 2);
+  fill(255, (230 / 100) * stats.hyperboost);
+  strokeWeight(0);
+  rect(15, height - 30, stats.hyperboost * 1.5, 15);
+  pop();
+}
+
+function debug() {
+  push();
+  translate(-width / 2 + 15, -height / 2 + 30);
   strokeWeight(0);
   textSize(16);
-  fill(244, 67, 54);
+  fill(255);
+  let i = 0;
   for (key in stats) {
     if (key != 'enabled') {
       text(`${key}: ${stats[key]}`, 0, i * 20);
       i++;
     }
   }
-  pop();
-}
-
-function showHUD() {
-  push();
-  fill(255, (230 / 100) * stats.hyperboost);
-  strokeWeight(0);
-  rect(15, height - 30, stats.hyperboost * 1.5, 15);
+  for (key in debuginfo) {
+    if (key != 'enabled') {
+      text(`${key}: ${debuginfo[key]}`, 0, i * 20);
+      i++;
+    }
+  }
   pop();
 }

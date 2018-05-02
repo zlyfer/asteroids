@@ -16,6 +16,7 @@ class Ship {
   }
 
   update() {
+    this.getSDir();
     if (!(this.isClone)) {
       this.head += this.rotation;
       if (this.boost) {
@@ -60,98 +61,27 @@ class Ship {
   }
 
   getSDir() {
-    let d = round(((this.head + PI / 2) % TAU) / (TAU / 8));
-    switch (d) {
-      case 0:
-        this.sdir = "N";
-        break;
-      case 1:
-        this.sdir = "NW";
-        break;
-      case 2:
-        this.sdir = "W";
-        break;
-      case 3:
-        this.sdir = "SW";
-        break;
-      case 4:
-        this.sdir = "S";
-        break;
-      case 5:
-        this.sdir = "SE";
-        break;
-      case 6:
-        this.sdir = "E";
-        break;
-      case 7:
-        this.sdir = "NE";
-        break;
+    let d = abs(((this.head + PI / 2) % TAU) / (TAU / 8)).toFixed(1);
+    if ((d > 0 && d <= 0.5) || (d <= 0 && d > 7.5) || d == 0) {
+      this.sdir = "N";
+    } else if (d > 0.5 && d <= 1.5) {
+      this.sdir = "NW";
+    } else if (d > 1.5 && d <= 2.5) {
+      this.sdir = "W";
+    } else if (d > 2.5 && d <= 3.5) {
+      this.sdir = "SW";
+    } else if (d > 3.5 && d <= 4.5) {
+      this.sdir = "S";
+    } else if (d > 4.5 && d <= 5.5) {
+      this.sdir = "SE";
+    } else if (d > 5.5 && d <= 6.5) {
+      this.sdir = "E";
+    } else if (d > 6.5 && d <= 7.5) {
+      this.sdir = "NE";
     }
-
-
-    // fill(180);
-    // text(d, -50, 50);
-    // strokeWeight(2);
-    //
-    // push();
-    // rotate(directions.n);
-    // stroke('rgba(100,100,100,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.ne);
-    // stroke('rgba(255,0,0,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.e);
-    // stroke('rgba(255,255,0,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.se);
-    // stroke('rgba(255,255,255,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.s);
-    // stroke('rgba(0,255,0,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.sw);
-    // stroke('rgba(0,255,255,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.w);
-    // stroke('rgba(0,0,255,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate(directions.nw);
-    // stroke('rgba(255,0,255,0.5)');
-    // line(0, 5, 0, 10);
-    // pop();
-    //
-    // push();
-    // rotate((this.head + PI / 2) % TAU);
-    // strokeWeight(1)
-    // stroke('rgba(255, 255, 255,0.5)');
-    // line(-0.5, 0, -0.5, -10);
-    // pop();
-
   }
 
   show() {
-    this.getSDir();
     push();
     translate(this.position.x, this.position.y);
     rotate(this.head + PI / 2);
@@ -159,7 +89,6 @@ class Ship {
     fill(180);
     quad(0, -this.size, -this.size, this.size, 0, this.size / 1.8, this.size, this.size);
     pop();
-
   }
 
   edge() {
@@ -198,6 +127,7 @@ class Ship {
       this.position.x = -(width / 2) + this.size;
     }
   }
+
   shootedge() {
     let m = abs(this.head) % TAU;
     if (
@@ -223,6 +153,59 @@ class Ship {
       return true;
     }
   }
+
+  debug() {
+    fill(180);
+    textSize(16);
+    text((this.head).toFixed(2) + " ≈ " + this.sdir, -50, 50);
+    strokeWeight(4);
+    push();
+    rotate(directions.n);
+    stroke('rgba(100,100,100,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.ne);
+    stroke('rgba(255,0,0,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.e);
+    stroke('rgba(255,255,0,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.se);
+    stroke('rgba(255,255,255,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.s);
+    stroke('rgba(0,255,0,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.sw);
+    stroke('rgba(0,255,255,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.w);
+    stroke('rgba(0,0,255,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate(directions.nw);
+    stroke('rgba(255,0,255,1)');
+    line(0, 5, 0, 30);
+    pop();
+    push();
+    rotate((this.head + PI / 2) % TAU);
+    strokeWeight(3)
+    stroke('rgba(255, 255, 255,0.7)');
+    line(-0.5, 0, -0.5, -50);
+    pop();
+  }
 }
 
 class Projectile {
@@ -230,10 +213,12 @@ class Projectile {
     this.head = ship.head;
     this.position = createVector(ship.position.x, ship.position.y);
   }
+
   fly() {
     let force = p5.Vector.fromAngle(this.head).mult(1);
     this.position.add(force);
   }
+
   edge(projectiles) {
     let index = projectiles.indexOf(this);
     if (
@@ -247,6 +232,7 @@ class Projectile {
     }
     return 0;
   }
+
   show() {
     push();
     translate(this.position.x, this.position.y);
