@@ -1,14 +1,19 @@
 class Star {
   constructor() {
-    this.size = round(random(1, 2.2));
-    this.x = round(random(-width / 2 + this.size, width / 2 - this.size));
-    this.y = round(random(-height / 2 + this.size, height / 2 - this.size));
+    this.size = random(1, 2.2);
+    this.x = random(-width / 2 + this.size, width / 2 - this.size);
+    this.y = random(-height / 2 + this.size, height / 2 - this.size);
     this.brightness = random(100, 255);
-    this.blinki = round(random(60));
+    this.blinki = round(random(120));
+  }
+
+  update() {
+    this.blink();
+    this.show();
   }
 
   blink() {
-    if (this.blinki <= 60) {
+    if (this.blinki <= 120) {
       this.blinki++;
     } else {
       this.brightness = round(random(100, 255));
@@ -21,6 +26,15 @@ class Star {
     translate(this.x, this.y);
     strokeWeight(this.size);
     stroke(this.brightness);
+    point(0, 0);
+    pop();
+  }
+
+  debug() {
+    push();
+    translate(this.x, this.y);
+    strokeWeight(3);
+    stroke('rgb(255, 255, 0)');
     point(0, 0);
     pop();
   }
