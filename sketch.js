@@ -96,9 +96,6 @@ function windowResized() {
 
 function draw() {
   background(0);
-  if (asteroids.length == 0) {
-    game.end();
-  }
   switch (game.state) {
     case "RESTART":
       init();
@@ -136,6 +133,9 @@ function draw() {
       showHUD();
       pop();
       break;
+  }
+  if (asteroids.length == 0) {
+    game.end();
   }
   if (debuginfo.enabled) {
     push();
