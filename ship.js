@@ -1,6 +1,5 @@
 // TODO: Thruster on Sides
 // TODO: Brake Thruster & Speedlocked visualisation
-
 class Ship {
   constructor(asteroids, head, size, acceleration, isClone = false) {
     this.size = size;
@@ -48,14 +47,13 @@ class Ship {
     this.getSDir();
     if (!this.isClone) {
       this.strength = (abs(this.velocity.x) + abs(this.velocity.y)) / (this.oacceleration * 100) * 100;
-
       if ((!this.speedlocked || this.boost || this.strength == 0) &&
         !this.hyperboost &&
         !this.slowaim &&
         (!this.brake || this.strength == 0) &&
         this.energy < 200
       ) {
-        this.energy++;
+        this.energy += 0.25;
       }
       if (
         (
@@ -85,10 +83,6 @@ class Ship {
       }
       this.position.add(this.velocity);
     }
-    if (!this.offEdge() || !this.isClone) {
-      this.show();
-      this.thrusterBack();
-    }
     if (!this.isClone) {
       this.clones.forEach(clone => {
         clone.update();
@@ -96,17 +90,17 @@ class Ship {
       this.edge();
       this.updateClones();
     }
+    if (!this.offEdge() || !this.isClone) {
+      this.show();
+    }
+    this.collidesAsteroid(asteroids, true);
   }
 
   thrusterBack() {
     push();
     translate(this.position.x, this.position.y);
     rotate(this.head + PI / 2);
-    if (this.boost) {
-      fill(random(((240 / 100) * this.strength) / 5, (255 / 100) * this.strength));
-    } else {
-      fill((255 / 100) * this.strength);
-    }
+    fill((255 / 100) * this.strength);
     strokeWeight(0);
     quad(-this.size - 2, this.size + 1, 0, (this.size / 1.8) + 1, this.size + 2, this.size + 1, 0, (this.size / 1.8) + this.strength / 2.8);
     pop();
@@ -134,6 +128,7 @@ class Ship {
   }
 
   show() {
+    this.thrusterBack();
     push();
     translate(this.position.x, this.position.y);
     rotate(this.head + PI / 2);
@@ -205,7 +200,7 @@ class Ship {
         (this.position.y - this.size < asteroid.position.y + asteroid.size)
       ) {
         if (destroy) {
-          // game.gameover;
+          game.end();
           return true;
         } else {
           return asteroid;

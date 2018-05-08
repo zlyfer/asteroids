@@ -1,6 +1,3 @@
-// TODO: Visualisation
-// TODO: Collision / Destroy
-
 class Asteroid {
   constructor(asteroids = false, sizeRule = false, genType = 0) {
     if (genType == 0) {
@@ -76,10 +73,7 @@ class Asteroid {
       });
       this.updateClones();
     }
-    if (!this.offEdge() || !this.isClone) {
-      this.edge();
-      this.show();
-    }
+    this.show();
   }
 
   edge() {
@@ -110,7 +104,9 @@ class Asteroid {
   }
 
   destroy(asteroids) {
-    if (this.size >= 20) {
+    stats.damage += round(this.size);
+    stats.destroyed++;
+    if (this.size >= 15) {
       for (let i = 0; i < 2; i++) {
         let nAsteroid = new Asteroid(asteroids, false, 2);
         nAsteroid.head = random(TAU);
@@ -121,10 +117,10 @@ class Asteroid {
         nAsteroid.velocity = createVector(0, 0).add(p5.Vector.fromAngle(this.head).mult(random(-0.6, 0.6)));
         let nx, ny;
         if (i == 0) {
-          nx = this.position.x - random(-this.size / 2, this.size / 2);
+          nx = this.position.x - random([-this.size / 2, this.size / 2]);
           ny = this.position.y - this.size / 2;
         } else {
-          nx = this.position.x + random(-this.size / 2, this.size / 2);
+          nx = this.position.x + random([-this.size / 2, this.size / 2]);
           ny = this.position.y + this.size / 2;
         }
         nAsteroid.position = createVector(nx, ny);
@@ -141,20 +137,23 @@ class Asteroid {
   }
 
   show() {
-    push();
-    translate(this.position.x, this.position.y);
-    rotate(this.head + PI / 2);
-    push();
-    stroke('rgb(200, 200, 200)');
-    strokeWeight(1);
-    fill(this.brightness);
-    beginShape();
-    this.shape.forEach(v => {
-      vertex(v.x, v.y);
-    });
-    endShape(CLOSE);
-    pop();
-    pop();
+    if (!this.offEdge() || !this.isClone) {
+      this.edge();
+      push();
+      translate(this.position.x, this.position.y);
+      rotate(this.head + PI / 2);
+      push();
+      stroke('rgb(200, 200, 200)');
+      strokeWeight(1);
+      fill(this.brightness);
+      beginShape();
+      this.shape.forEach(v => {
+        vertex(v.x, v.y);
+      });
+      endShape(CLOSE);
+      pop();
+      pop();
+    }
   }
 
   updateClones() {
