@@ -14,6 +14,7 @@ class Ship {
     this.velocity = createVector(0, 0);
     this.boost = false;
     this.brake = false;
+    this.slowaim = false;
     this.hyperboost = false;
     this.speedlocked = false;
     this.acceleration = 0;
@@ -35,7 +36,7 @@ class Ship {
       random((-width / 2) + this.size, (width / 2) - this.size),
       random((-height / 2) + this.size, (height / 2) - this.size)
     );
-    while (this.collidesAsteroid(asteroids)) {
+    while (this.collidesAsteroid(asteroids, false)) {
       this.position = createVector(
         random((-width / 2) + this.size, (width / 2) - this.size),
         random((-height / 2) + this.size, (height / 2) - this.size)
@@ -50,15 +51,19 @@ class Ship {
 
       if ((!this.speedlocked || this.boost || this.strength == 0) &&
         !this.hyperboost &&
+        !this.slowaim &&
         (!this.brake || this.strength == 0) &&
         this.energy < 200
       ) {
         this.energy++;
       }
       if (
-        ((this.strength > 0 && this.brake) ||
+        (
+          (this.strength > 0 && this.brake) ||
+          this.slowaim ||
           (!this.boost && this.speedlocked && this.strength > 0) ||
-          (this.hyperboost && this.boost)) &&
+          (this.hyperboost && this.boost)
+        ) &&
         this.energy > 0
       ) {
         this.energy--;
@@ -190,7 +195,7 @@ class Ship {
     return false;
   }
 
-  collidesAsteroid(asteroids) {
+  collidesAsteroid(asteroids, destroy) {
     for (let i = 0; i < asteroids.length; i++) {
       let asteroid = asteroids[i];
       if (
@@ -199,7 +204,12 @@ class Ship {
         (this.position.y + this.size > asteroid.position.y - asteroid.size) &&
         (this.position.y - this.size < asteroid.position.y + asteroid.size)
       ) {
-        return asteroid;
+        if (destroy) {
+          // game.gameover;
+          return true;
+        } else {
+          return asteroid;
+        }
       }
     }
     return false;

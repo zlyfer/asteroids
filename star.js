@@ -1,6 +1,6 @@
 class Star {
   constructor() {
-    this.size = random(1, 2.2);
+    this.size = random(2, 3);
     this.x = random(-width / 2 + this.size, width / 2 - this.size);
     this.y = random(-height / 2 + this.size, height / 2 - this.size);
     this.brightness = random(100, 255);

@@ -10,32 +10,13 @@ var
   ship,
   stars = [],
   projectiles = [],
-  asteroids = [];
-var
-  stats = {
-    enabled: false,
-    shots: 0,
-    missed: 0,
-    score: 0,
-    energy: 0,
-    accuracy: 0
-  },
-  debuginfo = {
-    enabled: false,
-    fps: 0,
-    brake: false,
-    speedlocked: false,
-    boost: false,
-    hyperboost: false,
-    shipDirection1: 0,
-    shipDirection2: "",
-    shipX: 0,
-    shipY: 0
-  };
-var directions;
+  asteroids = [],
+  stats,
+  debuginfo,
+  directions;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, P2D);
   directions = {
     n: (6 / 8) * TAU,
     ne: (7 / 8) * TAU,
@@ -46,20 +27,45 @@ function setup() {
     w: (4 / 8) * TAU,
     nw: (5 / 8) * TAU
   };
-  for (let s = 0; s < round((width + height) / 1000); s++) {
+  init();
+}
+
+function init() {
+  debuginfo = {
+    enabled: false,
+    fps: 0,
+    brake: false,
+    slowaim: false,
+    speedlocked: false,
+    boost: false,
+    hyperboost: false,
+    shipDirection1: 0,
+    shipDirection2: "",
+    shipX: 0,
+    shipY: 0
+  };
+  stats = {
+    enabled: false,
+    shots: 0,
+    missed: 0,
+    score: 0,
+    energy: 0,
+    accuracy: 0
+  };
+  for (let s = 0; s < 7; s++) {
     asteroids.push(new Asteroid(asteroids, {
       min: 80,
       max: 115
-    }));
+    }, 0));
   }
-  for (let s = 0; s < round((width + height) / 100); s++) {
+  for (let s = 0; s < 18; s++) {
     asteroids.push(new Asteroid(asteroids, {
-      min: 10,
-      max: 40
-    }));
+      min: 35,
+      max: 65
+    }, 0));
   }
   ship = new Ship(asteroids, random(TAU), 18, 0.1);
-  for (let s = 0; s < round((width + height) / 15); s++) {
+  for (let s = 0; s < 90; s++) {
     stars.push(new Star());
   }
 }
@@ -70,7 +76,6 @@ function windowResized() {
 
 function draw() {
   background(0);
-  frameRate(60);
   push();
   translate(width / 2, height / 2);
   stars.forEach(star => {
@@ -80,7 +85,7 @@ function draw() {
     asteroid.update();
   });
   projectiles.forEach(projectile => {
-    projectile.update();
+    projectile.update(asteroids);
     stats.missed += projectile.offEdge(projectiles);
   });
   ship.update();
@@ -105,20 +110,33 @@ function draw() {
 }
 
 function controls() {
-  if (keyIsDown(65)) {
+  if (keyIsDown(87)) {
     ship.brake = true;
   } else {
     ship.brake = false;
   }
-  if (keyIsDown(83)) {
+  if (keyIsDown(81)) {
     ship.speedlocked = true;
   } else {
     ship.speedlocked = false;
   }
+  if (keyIsDown(69)) {
+    ship.slowaim = true;
+  } else {
+    ship.slowaim = false;
+  }
   if (keyIsDown(RIGHT_ARROW)) {
-    ship.rotation = (TAU / 75);
+    if (ship.slowaim && ship.energy > 0) {
+      ship.rotation = (TAU / 250);
+    } else {
+      ship.rotation = (TAU / 100);
+    }
   } else if (keyIsDown(LEFT_ARROW)) {
-    ship.rotation = -(TAU / 75);
+    if (ship.slowaim && ship.energy > 0) {
+      ship.rotation = -(TAU / 250);
+    } else {
+      ship.rotation = -(TAU / 100);
+    }
   } else {
     ship.rotation = 0;
   }
@@ -169,6 +187,7 @@ function calcValues() {
   debuginfo.hyperboost = ship.hyperboost;
   debuginfo.brake = ship.brake;
   debuginfo.speedlocked = ship.speedlocked;
+  debuginfo.slowaim = ship.slowaim;
   debuginfo.shipDirection1 = ship.head.toFixed(2);
   debuginfo.shipDirection2 = ship.sdir;
   debuginfo.shipX = ship.position.x.toFixed(2);
