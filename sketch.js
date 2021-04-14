@@ -15,10 +15,9 @@ const controls = {
 	slowaim: "E",
 	restart: "BACKSPACE",
 	debug: "-"
-}
+};
 
-var
-	game,
+var game,
 	ship,
 	stars,
 	projectiles,
@@ -73,16 +72,28 @@ function init() {
 	stars = [];
 	asteroids = [];
 	for (let i = 0; i < 3; i++) {
-		asteroids.push(new Asteroid(asteroids, {
-			min: 90,
-			max: 100
-		}, 0));
+		asteroids.push(
+			new Asteroid(
+				asteroids,
+				{
+					min: 90,
+					max: 100
+				},
+				0
+			)
+		);
 	}
 	for (let i = 0; i < 7; i++) {
-		asteroids.push(new Asteroid(asteroids, {
-			min: 60,
-			max: 70
-		}, 0));
+		asteroids.push(
+			new Asteroid(
+				asteroids,
+				{
+					min: 60,
+					max: 70
+				},
+				0
+			)
+		);
 	}
 	ship = new Ship(asteroids, random(TAU), 14, 0.1);
 	for (let i = 0; i < 90; i++) {
@@ -161,8 +172,8 @@ function showStart() {
 }
 
 function showPause() {
-	// showMenu("PAUSE", "PRESS ENTER TO CONTINUE");
-	// showStats();
+	showMenu("PAUSE", "PRESS ENTER TO CONTINUE");
+	showStats();
 }
 
 function showGO() {
@@ -191,34 +202,34 @@ function showGame() {
 function showMenu(title, subtitle) {
 	push();
 	noStroke();
-	fill('rgba(0, 0, 0, 0.8)');
+	fill("rgba(0, 0, 0, 0.8)");
 	rect(-width / 2, -height / 2, width, height);
-	stroke('rgb(255, 255, 255)');
+	stroke("rgb(255, 255, 255)");
 	textAlign(CENTER);
-	fill('rgb(255, 0, 0)');
+	fill("rgb(255, 0, 0)");
 	strokeWeight(2);
 	textSize(64);
 	text(title, 0, -height / 2.8);
-	fill('rgb(255, 255, 255)');
+	fill("rgb(255, 255, 255)");
 	textSize(32);
 	noStroke();
-	text('> ' + subtitle + ' <', 0, -height / 3.5);
+	text("> " + subtitle + " <", 0, -height / 3.5);
 	pop();
 }
 
 function showControls() {
 	push();
-	fill('rgb(255, 255, 255)');
+	fill("rgb(255, 255, 255)");
 	textSize(28);
-	text('Controls', 0, -height / 6);
+	text("Controls", 0, -height / 6);
 	textSize(24);
 	noStroke();
 	let i = 0;
 	for (key in controls) {
-		if (key != 'enabled') {
+		if (key != "enabled") {
 			let name = key[0].toUpperCase() + key.substring(1);
 			let val = controls[key];
-			text(name + ':', -width / 2.5 + 100, -height / 10 + i * 30);
+			text(name + ":", -width / 2.5 + 100, -height / 10 + i * 30);
 			text(val, width / 2.5 - 100, -height / 10 + i * 30);
 			i++;
 		}
@@ -228,20 +239,20 @@ function showControls() {
 
 function showStats() {
 	push();
-	fill('rgb(255, 255, 255)');
+	fill("rgb(255, 255, 255)");
 	textSize(28);
-	text('Stats', 0, -height / 6);
+	text("Stats", 0, -height / 6);
 	textSize(24);
 	noStroke();
 	let i = 0;
 	for (key in stats) {
-		if (key != 'enabled') {
+		if (key != "enabled") {
 			let name = key[0].toUpperCase() + key.substring(1);
 			let val = stats[key];
 			if (percents.indexOf(key) != -1) {
-				val += '%';
+				val += "%";
 			}
-			text(name + ':', -width / 2.5 + 100, -height / 10 + i * 30);
+			text(name + ":", -width / 2.5 + 100, -height / 10 + i * 30);
 			text(val, width / 2.5 - 100, -height / 10 + i * 30);
 			i++;
 		}
@@ -292,7 +303,7 @@ function keyPressed() {
 				case 32:
 					let parents = [ship];
 					ship.clones.forEach(clone => {
-						parents.push(clone)
+						parents.push(clone);
 					});
 					parents.forEach(parent => {
 						let projectile = new Blaster(parent);
@@ -311,7 +322,7 @@ function keyPressed() {
 }
 
 function calcValues() {
-	stats.score = (stats.destroyed * 10) + (stats.damage) + (-stats.missed * 10);
+	stats.score = stats.destroyed * 10 + stats.damage + -stats.missed * 10;
 	if (second() != currentsecond && game.state == "RUN") {
 		currentsecond = second();
 		stats.time++;
@@ -340,7 +351,7 @@ function showHUD() {
 		translate(-width / 2, -height / 2);
 		strokeWeight(0);
 
-		fill('rgba(255, 255, 255, 0.1)');
+		fill("rgba(255, 255, 255, 0.1)");
 		rect(15, height - 30, 200, 15);
 
 		fill(255, (80 / 100) * ship.energy);
@@ -348,9 +359,9 @@ function showHUD() {
 
 		textSize(24);
 		textAlign(LEFT);
-		fill('rgb(255, 255, 255)');
-		text('Time: ' + stats.time, 15, 35);
-		text('Score: ' + stats.score, 15, 60);
+		fill("rgb(255, 255, 255)");
+		text("Time: " + stats.time, 15, 35);
+		text("Score: " + stats.score, 15, 60);
 
 		pop();
 	}
@@ -364,13 +375,13 @@ function debug() {
 	fill(255);
 	let i = 0;
 	for (key in stats) {
-		if (key != 'enabled') {
+		if (key != "enabled") {
 			text(`${key}: ${stats[key]}`, 0, i * 20);
 			i++;
 		}
 	}
 	for (key in debuginfo) {
-		if (key != 'enabled') {
+		if (key != "enabled") {
 			text(`${key}: ${debuginfo[key]}`, 0, i * 20);
 			i++;
 		}
@@ -396,9 +407,9 @@ function gameControls() {
 	}
 	if (keyIsDown(RIGHT_ARROW)) {
 		if (ship.slowaim && ship.energy > 0) {
-			ship.rotation = (TAU / 250);
+			ship.rotation = TAU / 250;
 		} else {
-			ship.rotation = (TAU / 100);
+			ship.rotation = TAU / 100;
 		}
 	} else if (keyIsDown(LEFT_ARROW)) {
 		if (ship.slowaim && ship.energy > 0) {
